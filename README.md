@@ -2,6 +2,7 @@
 
 
 First I took a look at the data and noticed some null values. 
+
 <img width="266" height="282" alt="image" src="https://github.com/user-attachments/assets/34607f32-8caf-45ee-9616-87e65e1d67fb" />
 
 To clean the table I removed the null values from items that will likely effect later analysis and updated the table. I also dropped any duplicates from the table:
@@ -60,4 +61,35 @@ sns.regplot(x='budget',y='gross',data=df, scatter_kws={"color":"red","s":4},line
 ````
 
 <img width="568" height="449" alt="image" src="https://github.com/user-attachments/assets/88d3987d-5f2a-46bf-bb5a-724a266b8ae3" />
+
+By creating a correlation matrix I can see that the pearson coefficient is noticeably high between <code>budget</code> and <code>gross</code>
+
+<img width="610" height="269" alt="image" src="https://github.com/user-attachments/assets/324408b6-a723-40b8-9e53-67864d8dea36" />
+
+I then turned it into a heatmap for a more detailed visualization:
+
+````
+correlation_matrix = df.select_dtypes(include='number').corr()
+sns.heatmap(correlation_matrix,annot = True)
+plt.title('Correlation Matrix for Numeric Features')
+plt.xlabel('Movie Features')
+plt.ylabel('Movie Fetaures')
+plt.show()
+````
+
+<img width="598" height="519" alt="image" src="https://github.com/user-attachments/assets/b68ef9d9-8da3-4980-a360-5f3717342598" />
+
+Next I want to look at the correlation between the company and the gross earnings. This is a little trickier because <code>company</code> is a string value. 
+To accomplish this I take each of the string values and assign them to a category type.
+
+````
+df2 = df
+for col_name in df2.columns:
+    if(df2[col_name].dtype == 'object'):
+        df2[col_name] = df2[col_name].astype('category')
+        df2[col_name] = df2[col_name].cat.codes
+````
+We can see now any value with type <code>object</code> has been assigned a numerical category:
+
+<img width="1080" height="358" alt="image" src="https://github.com/user-attachments/assets/b0e4164e-fb6e-469e-a420-ed9e4f56e3cd" />
 
