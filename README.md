@@ -77,7 +77,7 @@ plt.ylabel('Movie Fetaures')
 plt.show()
 ````
 
-<img width="598" height="519" alt="image" src="https://github.com/user-attachments/assets/b68ef9d9-8da3-4980-a360-5f3717342598" />
+<img width="598" height="519" alt="image" src="https://github.com/user-attachments/assets/39fd93e3-9ca3-417d-92ed-c2ac044321a5" />
 
 Next I want to look at the correlation between the company and the gross earnings. This is a little trickier because <code>company</code> is a string value. 
 To accomplish this I take each of the string values and assign them to a category type.
@@ -93,3 +93,28 @@ We can see now any value with type <code>object</code> has been assigned a numer
 
 <img width="1080" height="358" alt="image" src="https://github.com/user-attachments/assets/b0e4164e-fb6e-469e-a420-ed9e4f56e3cd" />
 
+After doing this, we can examine all the correlations on the matrix to see that budget and gross do indeed have a high correlation, as well as votes and gross
+
+<img width="1136" height="925" alt="image" src="https://github.com/user-attachments/assets/7a915c17-491d-4aa4-9c08-06458a26faba" />
+
+If we unstack the matrix with the following code, we can look more closely at the relationship between gross earnings and other metrics:
+
+````
+correlation_mat = df2.corr()
+corr_pairs = correlation_mat.unstack()
+corr_pairs['gross'].sort_values(ascending=False)
+````
+
+<img width="210" height="377" alt="image" src="https://github.com/user-attachments/assets/4cab737f-5257-4571-9d0b-4bfedf47ac9a" />
+
+To look at only the unstacked high correlated pairs from the matrix, I can unstack the matrix and look at the unique pairs with high correlation (greater than .5)
+to see the values with the highest correlation, which is <code>gross</code>/<code>budget</code> and <code>gross</code>/<code>votes</code>
+````
+sorted_pairs = corr_pairs.sort_values()
+high_corr  = sorted_pairs[(sorted_pairs > 0.5) & (sorted_pairs < 1)]
+high_corr = high_corr[
+    high_corr.index.get_level_values(0) 
+    < high_corr.index.get_level_values(1)]
+high_corr
+````
+<img width="235" height="39" alt="image" src="https://github.com/user-attachments/assets/ef9e0cb1-31c6-4947-b548-a5e7ba9a8820" />
